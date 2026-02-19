@@ -1,19 +1,4 @@
-DROP TABLE if EXISTS Segment;
-
-
-DROP TABLE if EXISTS Salle;
-
-
-DROP TABLE if EXISTS Poste;
-
-
-DROP TABLE if EXISTS Logicel;
-
-
-DROP TABLE if EXISTS Installer;
-
-
-DROP TABLE if EXISTS Type;
+BEGIN TRANSACTION;
 
 
 CREATE TABLE Segment (indIP INTEGER PRIMARY KEY,
@@ -30,12 +15,19 @@ CREATE TABLE Poste (nPoste INTEGER PRIMARY KEY,
                                                                                 and ad <= '255'), typePoste TEXT, nSalle INTEGER);
 
 
-CREATE TABLE Logicel(nLog INTEGER PRIMARY KEY,
-                                  nomLog TEXT, dateAch DATE, version TEXT, typeLog TEXT, prix REAL CHECK (prix >= 0));
+CREATE TABLE Logiciel(nLog INTEGER PRIMARY KEY,
+                                   nomLog TEXT, dateAch DATE, version TEXT, typeLog TEXT, prix REAL CHECK (prix >= 0));
 
+-- todo what to do with the not null
+-- todo what is the 'default' day
 
 CREATE TABLE Installer (numIns SERIAL PRIMARY KEY,
-                                      nPoste INTEGER, nLog INTEGER, dateIns TIMESTAMP, delai INTEGER);
+                                      nPoste INTEGER, nLog INTEGER, dateIns TIMESTAMP NOT NULL,
+                                                                                      delai INTEGER);
 
 
-CREATE TABLE Type (typeLP TEXT, nomType TEXT);
+CREATE TABLE Types (typeLP TEXT PRIMARY KEY,
+                                nomType TEXT);
+
+
+COMMIT;
