@@ -1,5 +1,94 @@
-begin transaction;
+-- !!ParcInfo.Sql!! --
 
+DROP TABLE if EXISTS Segment CASCADE;
+
+
+DROP TABLE if EXISTS Salle CASCADE;
+
+
+DROP TABLE if EXISTS Poste CASCADE;
+
+
+DROP TABLE if EXISTS Logiciel CASCADE;
+
+
+DROP TABLE if EXISTS Installer CASCADE;
+
+
+DROP TABLE if EXISTS Types CASCADE;
+
+
+CREATE TABLE Segment (indIP INTEGER PRIMARY KEY,
+                                    nomSegment TEXT NOT NULL,
+                                                    etage INTEGER) ;
+
+
+CREATE TABLE Salle(nSalle INTEGER PRIMARY KEY,
+                                  nomSalle TEXT, nbPoste INTEGER, indIP INTEGER);
+
+
+CREATE TABLE Poste (nPoste INTEGER PRIMARY KEY,
+                                   nomPoste TEXT, indIP INTEGER, ad TEXT CHECK (ad >= '0'
+                                                                                and ad <= '255'), typePoste TEXT, nSalle INTEGER);
+
+
+CREATE TABLE Logiciel(nLog INTEGER PRIMARY KEY,
+                                   nomLog TEXT, dateAch DATE, version TEXT, typeLog TEXT, prix REAL CHECK (prix >= 0));
+
+-- todo what to do with the not null
+-- todo what is the 'default' day
+
+CREATE TABLE Installer (numIns SERIAL PRIMARY KEY,
+                                      nPoste INTEGER, nLog INTEGER, dateIns TIMESTAMP NOT NULL,
+                                                                                      delai INTEGER);
+
+
+CREATE TABLE Types (typeLP TEXT PRIMARY KEY,
+                                nomType TEXT);
+
+-- !!question2.sql!!--
+
+ALTER TABLE Segment
+ALTER IndIp TYPE TEXT;
+
+
+ALTER TABLE Salle
+ALTER IndIp TYPE TEXT;
+
+
+ALTER TABLE Poste
+ALTER IndIp TYPE TEXT;
+
+
+ALTER TABLE Salle
+ALTER nSalle TYPE TEXT;
+
+
+ALTER TABLE Poste
+ALTER nSalle TYPE TEXT;
+
+
+ALTER TABLE Logiciel
+ALTER nLog TYPE TEXT;
+
+
+ALTER TABLE Installer
+ALTER nLog TYPE TEXT;
+
+
+ALTER TABLE Poste
+ALTER nPoste TYPE TEXT;
+
+
+ALTER TABLE Installer
+ALTER nPoste TYPE TEXT;
+
+
+ALTER TABLE Installer
+ALTER dateIns
+DROP NOT NULL;
+
+-- !!insert.sql!! --
 
 INSERT INTO Segment
 VALUES ('130.120.80','Brin RDC',NULL);
@@ -189,4 +278,64 @@ INSERT INTO installer (nPoste, nLog, dateIns, delai)
 VALUES ('p7', 'log7', '2002-04-01',NULL);
 
 
-commit;
+SELECT *
+FROM Segment;
+
+
+SELECT *
+FROM Salle;
+
+
+SELECT *
+FROM Poste;
+
+
+SELECT *
+FROM Logiciel;
+
+
+SELECT *
+FROM Installer;
+
+
+SELECT *
+FROM Types;
+
+-- !!references.sql!! --
+
+DELETE
+FROM Salle
+WHERE indip = '130.120.83';
+
+
+DELETE
+FROM logiciel
+WHERE typelog = 'BeOS';
+
+
+ALTER TABLE Poste ADD CONSTRAINT poste_indIp_fk
+FOREIGN KEY(indIp) REFERENCES Segment(indIp);
+
+
+ALTER TABLE Poste ADD CONSTRAINT poste_typePoste_fk
+FOREIGN KEY(typePoste) REFERENCES types(typeLP); -- should this reference this
+
+
+ALTER TABLE Poste ADD CONSTRAINT poste_nSalle_fk
+FOREIGN KEY(nSalle) REFERENCES Salle(nSalle);
+
+
+ALTER TABLE Installer ADD CONSTRAINT installer_nPoste_fk
+FOREIGN KEY(nPoste) REFERENCES Poste(nPoste);
+
+
+ALTER TABLE Installer ADD CONSTRAINT installer_nLog_fk
+FOREIGN KEY(nLog) REFERENCES Logiciel(nLog);
+
+
+ALTER TABLE Logiciel ADD CONSTRAINT logiciel_typeLog_fk
+FOREIGN KEY(typeLog) REFERENCES Types(typeLP);
+
+
+ALTER TABLE Salle ADD CONSTRAINT salle_indIp_fk
+FOREIGN KEY(indIp) REFERENCES Segment(indIp);

@@ -16,7 +16,7 @@ FOREIGN KEY(indIp) REFERENCES Segment(indIp);
 
 
 ALTER TABLE Poste ADD CONSTRAINT poste_typePoste_fk
-FOREIGN KEY(typePoste) REFERENCES types(typeLP); -- should this reference this
+FOREIGN KEY(typePoste) REFERENCES types(typeLP);
 
 
 ALTER TABLE Poste ADD CONSTRAINT poste_nSalle_fk
